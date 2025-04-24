@@ -21,8 +21,8 @@ load_dotenv()
 
 # 환경 변수에서 Obsidian API 정보 가져오기
 OBSIDIAN_API_URL = os.getenv("OBSIDIAN_API_URL", "http://127.0.0.1:27123")
-OBSIDIAN_API_KEY = os.getenv("OBSIDIAN_API_KEY", "b0df5af1074a6427ddebd7c3df2e5346afef4c5212c00ffe9ce08c33d143495e")
-VAULT_PATH = os.getenv("VAULT_PATH", "D:/ML_DL_AI_lesson_from_coursera/obsidian")
+OBSIDIAN_API_KEY = os.getenv("OBSIDIAN_API_KEY", "your_api_key_here")
+VAULT_PATH = os.getenv("VAULT_PATH", "./vault")
 
 # FastAPI 앱 생성
 app = FastAPI(title="Obsidian Bridge API")
@@ -42,7 +42,7 @@ def custom_openapi():
 
     openapi_schema["servers"] = [
         {
-            "url": "https://fcb9-118-222-99-177.ngrok-free.app"
+            "url": "http://localhost:8000"  # Default local development server
         }
     ]
 
