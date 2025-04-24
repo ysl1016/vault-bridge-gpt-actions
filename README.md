@@ -53,6 +53,51 @@ uvicorn main:app --reload
 
 The server will start on `http://localhost:8000`
 
+## External Access Setup with ngrok
+
+To make your local API accessible from the internet (required for GPT Actions), you can use ngrok. Here's how to set it up:
+
+1. **Install ngrok**
+   - Download from [ngrok website](https://ngrok.com/download)
+   - Sign up for a free account to get your authtoken
+
+2. **Configure ngrok**
+   ```bash
+   ngrok config add-authtoken your_authtoken_here
+   ```
+
+3. **Create ngrok configuration file** (ngrok.yml)
+   ```yaml
+   version: "2"
+   authtoken: your_authtoken_here
+   tunnels:
+     obsidian-bridge:
+       proto: http
+       addr: 8000
+       basic_auth:
+         - "username:password"
+   ```
+
+4. **Start ngrok tunnel**
+   ```bash
+   ngrok start obsidian-bridge
+   ```
+
+5. **Update OpenAPI configuration**
+   - When ngrok starts, it will display a forwarding URL (e.g., `https://xxxx-xx-xx-xx-xx.ngrok.io`)
+   - Update the `servers` section in `openapi.yaml`:
+   ```yaml
+   servers:
+     - url: your_ngrok_url_here
+   ```
+
+6. **Security Considerations**
+   - Always use basic authentication with ngrok
+   - Keep your ngrok authtoken private
+   - Don't commit ngrok.yml to version control
+   - Regularly rotate your basic auth credentials
+   - Monitor your ngrok dashboard for unusual activity
+
 ## API Endpoints
 
 - `GET /search` - Search notes by keyword
@@ -67,12 +112,40 @@ For full API documentation, visit `/docs` when the server is running.
 - API key authentication
 - CORS middleware
 - Environment variable configuration
+- Basic authentication through ngrok
 
 ## Error Handling
 
 - Detailed logging
 - Graceful fallbacks
 - HTTP error responses
+
+## Development
+
+### Environment Variables
+
+Copy `.env.example` to `.env` and update the values:
+
+```bash
+cp .env.example .env
+```
+
+### Local Testing
+
+1. Start the Obsidian Local REST API plugin
+2. Configure your `.env` file
+3. Start the server
+4. Test endpoints using the Swagger UI at `/docs`
+
+### Production Deployment
+
+For production deployment, consider:
+
+1. Using a proper reverse proxy (nginx/Apache)
+2. Implementing rate limiting
+3. Setting up SSL/TLS
+4. Implementing proper authentication
+5. Using a process manager (PM2/Supervisor)
 
 ## Contributing
 
