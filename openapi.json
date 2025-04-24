@@ -1,0 +1,307 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Obsidian Bridge API",
+    "description": "GPT용 FastAPI Actions 서버 - Obsidian 볼트 접근 및 관리를 위한 API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "API 상태 확인",
+        "description": "API 서버의 기본 상태를 확인합니다.",
+        "operationId": "read_root",
+        "responses": {
+          "200": {
+            "description": "성공적인 응답",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Welcome to Obsidian Bridge API"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "running"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ping": {
+      "get": {
+        "summary": "서버 연결 테스트",
+        "description": "API 서버의 연결 상태를 확인합니다.",
+        "operationId": "ping",
+        "responses": {
+          "200": {
+            "description": "성공적인 응답",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Bridge server is running"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vault": {
+      "get": {
+        "summary": "볼트 정보 조회",
+        "description": "Obsidian 볼트의 전체 파일 목록을 조회합니다.",
+        "operationId": "get_vault",
+        "responses": {
+          "200": {
+            "description": "성공적인 응답",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "files": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "볼트 내 마크다운 파일 목록"
+                    },
+                    "count": {
+                      "type": "integer",
+                      "description": "전체 파일 수"
+                    },
+                    "vault_path": {
+                      "type": "string",
+                      "description": "볼트 경로"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/read-file": {
+      "get": {
+        "summary": "파일 내용 읽기",
+        "description": "지정된 경로의 마크다운 파일 내용을 읽어옵니다.",
+        "operationId": "read_file",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "query",
+            "required": true,
+            "description": "읽을 파일의 상대 경로",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공적인 응답",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "content": {
+                      "type": "string",
+                      "description": "파일 내용"
+                    },
+                    "path": {
+                      "type": "string",
+                      "description": "파일 경로"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "파일을 찾을 수 없음",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "File not found: path/to/file.md"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "summary": "노트 검색",
+        "description": "볼트 내 모든 마크다운 파일에서 키워드를 검색합니다.",
+        "operationId": "search_notes",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "검색할 키워드",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공적인 응답",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "files": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "검색된 파일 목록"
+                    },
+                    "count": {
+                      "type": "integer",
+                      "description": "검색된 파일 수"
+                    },
+                    "query": {
+                      "type": "string",
+                      "description": "검색 키워드"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/save": {
+      "post": {
+        "summary": "노트 저장",
+        "description": "새로운 노트를 생성하거나 기존 노트를 수정합니다.",
+        "operationId": "save_note",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "description": "저장할 파일 경로"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "파일 내용"
+                  }
+                },
+                "required": ["path", "content"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "성공적으로 저장됨",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "path": {
+                      "type": "string",
+                      "description": "저장된 파일 경로"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "type": "object",
+        "properties": {
+          "detail": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "loc": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            }
+          },
+          "msg": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": ["loc", "msg", "type"]
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://vault.drbreakfast.org",
+      "description": "Cloudflare Tunnel을 통한 프로덕션 서버"
+    },
+    {
+      "url": "http://localhost:8000",
+      "description": "로컬 개발 서버"
+    }
+  ]
+}
