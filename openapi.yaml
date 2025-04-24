@@ -1,0 +1,55 @@
+openapi: 3.1.0
+info:
+  title: Obsidian Vault Bridge API
+  version: "1.0.0"
+servers:
+  - url: https://fcb9-118-222-99-177.ngrok-free.app          # ← ngrok·Cloudflare 사용 시 외부 URL
+paths:
+  /search:
+    get:
+      summary: "키워드로 노트 검색"
+      parameters:
+        - name: query
+          in: query
+          schema: {type: string}
+          required: true
+      responses:
+        '200':
+          description: "검색 결과"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  files:
+                    type: array
+                    items: {type: string}
+  /vault:
+    get:
+      summary: "보관함(.md 파일) 전체 목록"
+      responses:
+        '200': {description: "노트 배열"}
+  /read-file:
+    get:
+      summary: "특정 노트 읽기"
+      parameters:
+        - name: path
+          in: query
+          schema: {type: string}
+          required: true
+      responses:
+        '200': {description: "파일 내용"}
+  /save:
+    post:
+      summary: "노트 저장·덮어쓰기"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                path:   {type: string}
+                content:{type: string}
+      responses:
+        '200': {description: "ok 여부"}
