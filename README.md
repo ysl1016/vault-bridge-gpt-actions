@@ -47,15 +47,43 @@ VAULT_PATH=/path/to/your/vault
 
 ## Running the Server
 
+1. Start the FastAPI server:
 ```bash
-uvicorn main:app --reload
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 The server will start on `http://localhost:8000`
 
-## External Access Setup with ngrok
+2. Start the Cloudflare tunnel (make sure you have cloudflared installed):
+```bash
+cloudflared tunnel --url http://localhost:8000
+```
 
-To make your local API accessible from the internet (required for GPT Actions), you can use ngrok. Here's how to set it up:
+This will create a secure tunnel to your local FastAPI server, making it accessible from the internet with a stable URL.
+
+## External Access Setup
+
+### Option 1: Using Cloudflare Tunnel (Recommended)
+
+1. **Install cloudflared**
+   - Download from [Cloudflare website](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation)
+   - Follow the installation instructions for your operating system
+
+2. **Start the tunnel**
+   ```bash
+   cloudflared tunnel --url http://localhost:8000
+   ```
+
+   > **Benefits of Cloudflare Tunnel:**
+   > - Free permanent URL
+   > - Built-in SSL/TLS encryption
+   > - DDoS protection
+   > - No need to update URLs when restarting
+   > - Better security and performance
+
+### Option 2: Using ngrok
+
+To make your local API accessible from the internet using ngrok, follow these steps:
 
 1. **Install ngrok**
    - Download from [ngrok website](https://ngrok.com/download)
@@ -75,7 +103,7 @@ To make your local API accessible from the internet (required for GPT Actions), 
    > - The free tier of ngrok generates a new random domain each time you start the tunnel
    > - The URL will look like `https://xxxx-xx-xx-xx-xx.ngrok.io`
    > - You'll need to update your OpenAPI configuration and GPT Actions configuration each time you restart ngrok
-   > - For persistent domains, consider upgrading to a paid ngrok plan or wait for our upcoming Cloudflare Tunnel integration
+   > - For persistent domains, consider upgrading to a paid ngrok plan or using Cloudflare Tunnel
 
 4. **Update OpenAPI configuration**
    - When ngrok starts, it will display a forwarding URL
@@ -95,39 +123,11 @@ To make your local API accessible from the internet (required for GPT Actions), 
    - The free tier doesn't support custom domains or persistent URLs
    - Each new ngrok session will generate a new URL
    - Monitor your ngrok dashboard for unusual activity
-   - Consider using ngrok's paid features or waiting for Cloudflare Tunnel integration for:
+   - Consider using ngrok's paid features or Cloudflare Tunnel for:
      - Custom/fixed domains
      - Additional security features
      - Persistent connections
      - Team collaboration
-
-## Upcoming Features: Cloudflare Tunnel Integration 🚧
-
-We are actively working on integrating Cloudflare Tunnels as an alternative to ngrok. This will provide several advantages:
-
-### Planned Features
-- **Persistent Custom Domains**: Set up a permanent domain for your API
-- **Free Tier Benefits**:
-  - Custom subdomain support
-  - Unlimited tunnels
-  - No random domain changes
-  - Zero-trust security model
-- **Enhanced Security**:
-  - Built-in SSL/TLS encryption
-  - Zero-trust network access
-  - DDoS protection
-  - WAF (Web Application Firewall)
-- **Improved Performance**:
-  - Global CDN network
-  - Automatic optimization
-  - Low-latency connections
-
-### Implementation Timeline
-- Initial Cloudflare integration: Q2 2024
-- Beta testing phase: Q3 2024
-- Stable release: Q4 2024
-
-Stay tuned for updates! Star this repository to get notified when the Cloudflare integration is released.
 
 ## API Endpoints
 
@@ -177,33 +177,36 @@ For production deployment, consider:
 3. Setting up SSL/TLS
 4. Implementing proper authentication
 5. Using a process manager (PM2/Supervisor)
-6. Using a paid ngrok plan or waiting for our Cloudflare Tunnel integration
 
 ### Troubleshooting
 
-1. **New ngrok URL not working:**
-   - Verify the ngrok tunnel is running
-   - Check if you've updated the OpenAPI configuration
-   - Ensure your GPT Actions are using the new URL
-   - Test the connection using the `/ping` endpoint
+1. **Server Connection Issues:**
+   - Verify the FastAPI server is running on port 8000
+   - Check if the server is accessible at http://localhost:8000
+   - Ensure your firewall allows the connection
+   - Check the server logs for any errors
 
-2. **Connection Issues:**
-   - Confirm the local server is running on port 8000
-   - Check ngrok status in the terminal
-   - Verify your firewall settings
-   - Ensure your ngrok authtoken is valid
+2. **Tunnel Connection Issues:**
+   - For Cloudflare Tunnel:
+     - Verify cloudflared is running
+     - Check the tunnel logs for connection status
+     - Ensure your Cloudflare account is properly configured
+   - For ngrok:
+     - Check ngrok status in the terminal
+     - Verify your ngrok authtoken is valid
+     - Ensure the tunnel is properly forwarding to port 8000
 
 ## Roadmap
 
 1. **Current Phase**
    - Basic API functionality ✅
-   - ngrok integration ✅
+   - Cloudflare Tunnel integration ✅
    - Documentation ✅
 
 2. **Next Phase (In Progress)**
-   - Cloudflare Tunnel integration 🚧
    - Enhanced security features 🚧
    - Performance optimizations 🚧
+   - Advanced authentication options 🚧
 
 3. **Future Plans**
    - Advanced search capabilities
