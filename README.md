@@ -75,7 +75,7 @@ To make your local API accessible from the internet (required for GPT Actions), 
    > - The free tier of ngrok generates a new random domain each time you start the tunnel
    > - The URL will look like `https://xxxx-xx-xx-xx-xx.ngrok.io`
    > - You'll need to update your OpenAPI configuration and GPT Actions configuration each time you restart ngrok
-   > - For persistent domains, consider upgrading to a paid ngrok plan
+   > - For persistent domains, consider upgrading to a paid ngrok plan or wait for our upcoming Cloudflare Tunnel integration
 
 4. **Update OpenAPI configuration**
    - When ngrok starts, it will display a forwarding URL
@@ -95,11 +95,39 @@ To make your local API accessible from the internet (required for GPT Actions), 
    - The free tier doesn't support custom domains or persistent URLs
    - Each new ngrok session will generate a new URL
    - Monitor your ngrok dashboard for unusual activity
-   - Consider using ngrok's paid features for:
+   - Consider using ngrok's paid features or waiting for Cloudflare Tunnel integration for:
      - Custom/fixed domains
      - Additional security features
      - Persistent connections
      - Team collaboration
+
+## Upcoming Features: Cloudflare Tunnel Integration 🚧
+
+We are actively working on integrating Cloudflare Tunnels as an alternative to ngrok. This will provide several advantages:
+
+### Planned Features
+- **Persistent Custom Domains**: Set up a permanent domain for your API
+- **Free Tier Benefits**:
+  - Custom subdomain support
+  - Unlimited tunnels
+  - No random domain changes
+  - Zero-trust security model
+- **Enhanced Security**:
+  - Built-in SSL/TLS encryption
+  - Zero-trust network access
+  - DDoS protection
+  - WAF (Web Application Firewall)
+- **Improved Performance**:
+  - Global CDN network
+  - Automatic optimization
+  - Low-latency connections
+
+### Implementation Timeline
+- Initial Cloudflare integration: Q2 2024
+- Beta testing phase: Q3 2024
+- Stable release: Q4 2024
+
+Stay tuned for updates! Star this repository to get notified when the Cloudflare integration is released.
 
 ## API Endpoints
 
@@ -149,7 +177,7 @@ For production deployment, consider:
 3. Setting up SSL/TLS
 4. Implementing proper authentication
 5. Using a process manager (PM2/Supervisor)
-6. Using a paid ngrok plan or alternative tunneling service for persistent URLs
+6. Using a paid ngrok plan or waiting for our Cloudflare Tunnel integration
 
 ### Troubleshooting
 
@@ -164,6 +192,24 @@ For production deployment, consider:
    - Check ngrok status in the terminal
    - Verify your firewall settings
    - Ensure your ngrok authtoken is valid
+
+## Roadmap
+
+1. **Current Phase**
+   - Basic API functionality ✅
+   - ngrok integration ✅
+   - Documentation ✅
+
+2. **Next Phase (In Progress)**
+   - Cloudflare Tunnel integration 🚧
+   - Enhanced security features 🚧
+   - Performance optimizations 🚧
+
+3. **Future Plans**
+   - Advanced search capabilities
+   - Real-time updates
+   - Multiple vault support
+   - Collaborative features
 
 ## Contributing
 
