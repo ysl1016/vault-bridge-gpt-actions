@@ -66,37 +66,40 @@ To make your local API accessible from the internet (required for GPT Actions), 
    ngrok config add-authtoken your_authtoken_here
    ```
 
-3. **Create ngrok configuration file** (ngrok.yml)
-   ```yaml
-   version: "2"
-   authtoken: your_authtoken_here
-   tunnels:
-     obsidian-bridge:
-       proto: http
-       addr: 8000
-       basic_auth:
-         - "username:password"
-   ```
-
-4. **Start ngrok tunnel**
+3. **Start ngrok tunnel**
    ```bash
-   ngrok start obsidian-bridge
+   ngrok http 8000
    ```
 
-5. **Update OpenAPI configuration**
-   - When ngrok starts, it will display a forwarding URL (e.g., `https://xxxx-xx-xx-xx-xx.ngrok.io`)
-   - Update the `servers` section in `openapi.yaml`:
+   > **Important Note for Free Tier Users:**
+   > - The free tier of ngrok generates a new random domain each time you start the tunnel
+   > - The URL will look like `https://xxxx-xx-xx-xx-xx.ngrok.io`
+   > - You'll need to update your OpenAPI configuration and GPT Actions configuration each time you restart ngrok
+   > - For persistent domains, consider upgrading to a paid ngrok plan
+
+4. **Update OpenAPI configuration**
+   - When ngrok starts, it will display a forwarding URL
+   - Update the `servers` section in `openapi.yaml` with the new URL:
    ```yaml
    servers:
-     - url: your_ngrok_url_here
+     - url: your_new_ngrok_url_here  # Update this every time you restart ngrok
    ```
 
+5. **Using with GPT Actions**
+   - After starting ngrok, copy the new HTTPS URL
+   - Update your GPT Actions configuration with the new URL
+   - Remember to update this URL whenever you restart ngrok (free tier limitation)
+   - Test the connection using the `/ping` endpoint before configuring GPT Actions
+
 6. **Security Considerations**
-   - Always use basic authentication with ngrok
-   - Keep your ngrok authtoken private
-   - Don't commit ngrok.yml to version control
-   - Regularly rotate your basic auth credentials
+   - The free tier doesn't support custom domains or persistent URLs
+   - Each new ngrok session will generate a new URL
    - Monitor your ngrok dashboard for unusual activity
+   - Consider using ngrok's paid features for:
+     - Custom/fixed domains
+     - Additional security features
+     - Persistent connections
+     - Team collaboration
 
 ## API Endpoints
 
@@ -112,7 +115,7 @@ For full API documentation, visit `/docs` when the server is running.
 - API key authentication
 - CORS middleware
 - Environment variable configuration
-- Basic authentication through ngrok
+- Basic authentication through ngrok (available in paid tiers)
 
 ## Error Handling
 
@@ -146,6 +149,21 @@ For production deployment, consider:
 3. Setting up SSL/TLS
 4. Implementing proper authentication
 5. Using a process manager (PM2/Supervisor)
+6. Using a paid ngrok plan or alternative tunneling service for persistent URLs
+
+### Troubleshooting
+
+1. **New ngrok URL not working:**
+   - Verify the ngrok tunnel is running
+   - Check if you've updated the OpenAPI configuration
+   - Ensure your GPT Actions are using the new URL
+   - Test the connection using the `/ping` endpoint
+
+2. **Connection Issues:**
+   - Confirm the local server is running on port 8000
+   - Check ngrok status in the terminal
+   - Verify your firewall settings
+   - Ensure your ngrok authtoken is valid
 
 ## Contributing
 
