@@ -3,7 +3,7 @@ info:
   title: Obsidian Vault Bridge API
   version: "1.0.0"
 servers:
-  - url: https://fcb9-118-222-99-177.ngrok-free.app          # ← ngrok·Cloudflare 사용 시 외부 URL
+  - url: http://localhost:8000          # Default local development server
 paths:
   /search:
     get:
